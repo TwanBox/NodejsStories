@@ -1,1 +1,27 @@
-<h1>dashboard</h1>
+<h6><strong>Dashboard</strong></h6>
+<h3>Welcome {{name}}!</h3>
+<p>{{name}}'s stories:</p>
+{{#if stories}}
+    <table class="striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each stories}}
+                <tr>
+                    <td><a href="/stories/{{_id}}"></a>{{title}}</td>
+                    <td>{{createdAt}}</td>
+                    <td><span class="dash-status">{{status}}</span></td>
+                    <td></td>
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+{{else}}
+    <p>Create your first story!</p>
+{{/if}}
