@@ -24,14 +24,21 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 // Helpers
-const { formatDate, getInitials, stripTags, truncate } = require('./helpers/hbs');
+const {
+  formatDate,
+  getInitials,
+  stripTags,
+  truncate,
+  editIcon
+} = require('./helpers/hbs');
 
 // Handlebars template engine
 app.engine('.hbs', exphbs({helpers: {
   formatDate,
   getInitials,
   stripTags,
-  truncate
+  truncate,
+  editIcon
 }, defaultLayout: 'main', extname: '.hbs'}));
 app.set('view engine', '.hbs');
 
@@ -43,9 +50,15 @@ app.use(session({
   store: new MongoStore({ mongooseConnection: mongoose.connection })
 }))
 
-// passport
+// passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Global variable
+app.use((req, res, next) => {
+  res.locals.user = req.user || null;
+  next();
+});
 
 // Static folder
 app.use(express.static(path.join(__dirname, 'public')));
