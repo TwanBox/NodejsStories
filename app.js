@@ -24,11 +24,14 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 // Helpers
-const { formatDate } = require('./helpers/hbs');
+const { formatDate, getInitials, stripTags, truncate } = require('./helpers/hbs');
 
 // Handlebars template engine
 app.engine('.hbs', exphbs({helpers: {
-  formatDate
+  formatDate,
+  getInitials,
+  stripTags,
+  truncate
 }, defaultLayout: 'main', extname: '.hbs'}));
 app.set('view engine', '.hbs');
 
