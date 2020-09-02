@@ -38,4 +38,64 @@ router.get('/', ensureAuth, async (req, res) => {
 	}
 });
 
+// Display edit page
+router.get('/edit/:id', ensureAuth, async (req, res) => {
+	try {
+		const story = await Story.findOne({
+		_id: req.params.id
+	}).lean();
+
+	if (!story) {
+		return res.render('error/404');
+	}
+
+	if (story.user != req.user.id) {
+		res.redirect('/stories');
+	} else {
+		res.render('stories/edit', {
+			story
+		});
+	}
+	} catch (err) {
+		console.error('err');
+	  return res.render('error/404')
+	}
+});
+
+
+// Update a story
+router.put('/:id', ensureAuth, async (req, res) => {
+	try {
+		let story = await Story.findById(req.params.id).lean();
+	if (!story) {
+		return res.render('error/404');
+	}
+
+	if (story.user != req.user.id) {
+		res.redirect('/stories');
+	} else {
+		story = await Story.findOneAndUpdate({ _id: req.params.id }, req.body, {
+			new: true,
+			runValidators: true
+		});
+		res.redirect('/dashboard');
+	}
+	} catch (err) {
+		console.error('err');
+	  return res.render('error/404')
+	}
+});
+
+// Delete a story
+router.delete('/:id', ensureAuth, async (req, res) => {
+  try {
+	  await Story.deleteOne({ _id: req.params.id });
+	  res.redirect('/');
+  } catch (err) {
+	  console.error('err');
+	  return res.render('error/404')
+  }
+});
+
+
 module.exports = router;
